@@ -22,9 +22,10 @@ function setup() {
   n_theta = 12;
 
   scale_slider = createSlider(grid_scale, 200, 80);
-  label_checkbox = createCheckbox('labels', true);
+  label_checkbox = createCheckbox('show labels', true);
 
   v_euk = new vec2(4, 3)
+
 }
 
 function draw() {
