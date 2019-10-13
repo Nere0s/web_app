@@ -12,24 +12,63 @@ let drag_1 = false;
 let drag_2 = false;
 let mouse_pos;
 
-var scale_slider;
-var label_checkbox;
-var add_checkbox;
-var snap_checkbox;
+let app_canvas;
+let controlls_size = {
+  x: 150,
+  y: 0
+}
 
-function setup() {
-  createCanvas(1280, 720);
+const fps = 30;
+const canvas_window_ratio = {
+  x: .9,
+  y: .8
+}
+
+let controlls = {};
+
+function config_canvas(new_canvas = false) {
+  if (new_canvas) {
+    app_canvas = createCanvas(windowWidth * canvas_window_ratio.x, windowHeight * canvas_window_ratio.y);
+    app_canvas.parent('app_holder');
+  } else {
+    resizeCanvas(windowWidth * canvas_window_ratio.x, windowHeight * canvas_window_ratio.y);
+  }
   origin_x = -width / 2;
   origin_y = -height / 2;
   end_x = width / 2;
   end_y = height / 2;
   n_x = floor(width / grid_scale);
   n_y = floor(height / grid_scale);
+}
 
-  scale_slider = createSlider(grid_scale, 200, 80);
-  label_checkbox = createCheckbox('labels', true);
-  add_checkbox = createCheckbox('add vectors', false);
-  snap_checkbox = createCheckbox('snap to grid', false);
+function setup_controlls() {
+  let x_off = app_canvas.position().x + 15;
+  let y_off = app_canvas.position().y + 15;
+  let y_ext = 30;
+  let elements = Object.values(controlls);
+  for (var i = 0; i < elements.length; i++) {
+    elements[i].position(x_off, y_off + i * y_ext);
+  }
+  controlls_size.y = elements.length * 30 + 20
+}
+
+function draw_controlls() {
+  strokeWeight(2)
+  stroke(0)
+  fill(255)
+  rect(origin_x + 5, origin_y + 5, controlls_size.x, controlls_size.y)
+}
+
+function setup() {
+  config_canvas(true)
+  frameRate(fps)
+
+  controlls.label_checkbox = createCheckbox('labels', true);
+  controlls.add_checkbox = createCheckbox('add vectors', false);
+  controlls.snap_checkbox = createCheckbox('snap to grid', false);
+  controlls.scale = createDiv('Zoom');
+  controlls.scale_slider = createSlider(grid_scale, 200, 80).style('width', (controlls_size.x - 30) + 'px');
+  setup_controlls()
 
   v_0 = new vec2(0, 0);
   v_1 = new vec2(3, 2);
@@ -37,9 +76,10 @@ function setup() {
 }
 
 function draw() {
+  config_canvas()
   background(200);
   translate(width / 2, height / 2);
-  grid_scale = scale_slider.value();
+  grid_scale = controlls.scale_slider.value();
   mouse_pos = new vec2(mouseX + origin_x, -mouseY - origin_y).scaled(1 / grid_scale);
 
   // setup grid
@@ -66,7 +106,7 @@ function draw() {
   text('x', end_x - 20, 20)
   text('y', -20, origin_y + 20)
   textSize(10)
-  if (label_checkbox.checked()) {
+  if (controlls.label_checkbox.checked()) {
     strokeWeight(0);
     for (x_i = -floor(n_x / 2); x_i <= n_x; ++x_i) {
       text(x_i, x_i * grid_scale + 5, -5)
@@ -77,13 +117,13 @@ function draw() {
   }
 
   if (drag_1) {
-    if (snap_checkbox.checked()) {
+    if (controlls.snap_checkbox.checked()) {
       v_1 = mouse_pos.round()
     } else {
       v_1 = mouse_pos
     }
   } else if (drag_2) {
-    if (snap_checkbox.checked()) {
+    if (controlls.snap_checkbox.checked()) {
       v_2 = mouse_pos.round()
     } else {
       v_2 = mouse_pos
@@ -112,7 +152,7 @@ function draw() {
   v_2.label_head(grid_scale);
 
   // 1 + 2
-  if (add_checkbox.checked()) {
+  if (controlls.add_checkbox.checked()) {
     strokeWeight(2);
     stroke(0, 0, 255, 50);
     fill(0, 0, 255, 50);
@@ -132,6 +172,8 @@ function draw() {
     fill(0);
     v_1.add(v_2).label_head(grid_scale);
   }
+
+  draw_controlls()
 }
 
 function mousePressed() {

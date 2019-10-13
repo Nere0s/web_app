@@ -78,9 +78,9 @@ class vec2 {
 
   label_head(scale, type = 'euk') {
     if (type == 'euk') {
-      text('(' + nfc(this.x, 1) + ',' + nfc(this.y, 1) + ')', this.scaled_x(scale) + 5, -this.scaled_y(scale) - 5)
+      text('(' + nfc(this.x, 1) + ', ' + nfc(this.y, 1) + ')', this.scaled_x(scale) + 5, -this.scaled_y(scale) - 5)
     } else if (type = 'pol') {
-      text('(' + nfc(this.len(), 1) + ',' + nfc(this.pol_angle() / TWO_PI * 360, 0) + '\xB0)', this.scaled_x(scale) + 5, -this.scaled_y(scale) - 5)
+      text('(' + nfc(this.len(), 1) + ', ' + nfc(this.pol_angle() / TWO_PI * 360, 0) + '\xB0)', this.scaled_x(scale) + 5, -this.scaled_y(scale) - 5)
     }
   }
 }
