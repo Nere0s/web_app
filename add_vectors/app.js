@@ -29,7 +29,7 @@ let controlls = {};
 function config_canvas(new_canvas = false) {
   if (new_canvas) {
     app_canvas = createCanvas(windowWidth * canvas_window_ratio.x, windowHeight * canvas_window_ratio.y);
-    app_canvas.parent('app_holder');
+    //app_canvas.parent('app_holder');
   } else {
     resizeCanvas(windowWidth * canvas_window_ratio.x, windowHeight * canvas_window_ratio.y);
   }
